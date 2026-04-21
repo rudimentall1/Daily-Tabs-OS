@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Daily Tabs OS",
+  "version": "0.1",
+  "description": "Tasks + bookmarks daily system",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage", "tabs"]
+}

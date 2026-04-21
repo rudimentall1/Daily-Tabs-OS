@@ -10,55 +10,63 @@
 
 <div class="app">
 
-  <header class="topbar">
-    <div>
-      <h1>Daily Tabs OS</h1>
-      <p id="todayDate"></p>
-    </div>
-    <div class="badge" id="progressBadge">0 Done</div>
-  </header>
+<header class="topbar">
+<div>
+<h1>Daily Tabs OS</h1>
+<p id="todayDate"></p>
+</div>
 
-  <section class="card add-card">
-    <input id="taskInput" type="text" placeholder="What needs to be done?">
+<div class="badge" id="progressBadge">0 Tasks</div>
+</header>
 
-    <div class="row">
-      <select id="sectionSelect">
-        <option value="morning">Morning ☀️</option>
-        <option value="day">Day 💼</option>
-        <option value="evening">Evening 🌙</option>
-      </select>
+<section class="card premium-card">
+<div>
+<div class="section-title">PRO VERSION</div>
+<p class="pro-text">Sync • Stats • Themes • Recurring • AI Planner</p>
+</div>
 
-      <button id="addTaskBtn">Add</button>
-    </div>
-  </section>
+<button id="upgradeBtn">Upgrade</button>
+</section>
 
-  <section class="card">
-    <div class="section-title">Morning ☀️</div>
-    <ul id="morningList"></ul>
-  </section>
+<section class="card add-card">
+<input id="taskInput" placeholder="What needs to be done?">
 
-  <section class="card">
-    <div class="section-title">Day 💼</div>
-    <ul id="dayList"></ul>
-  </section>
+<div class="row">
+<select id="sectionSelect">
+<option value="morning">Morning ☀️</option>
+<option value="day">Day 💼</option>
+<option value="evening">Evening 🌙</option>
+</select>
 
-  <section class="card">
-    <div class="section-title">Evening 🌙</div>
-    <ul id="eveningList"></ul>
-  </section>
+<button id="addTaskBtn">Add</button>
+</div>
+</section>
 
-  <section class="card">
-    <div class="section-title">Done ✅</div>
-    <ul id="doneList"></ul>
-  </section>
+<section class="card">
+<div class="section-title">Morning ☀️</div>
+<ul id="morningList"></ul>
+</section>
 
-  <section class="card">
-    <div class="section-title">Bookmarks</div>
+<section class="card">
+<div class="section-title">Day 💼</div>
+<ul id="dayList"></ul>
+</section>
 
-    <button id="saveTabBtn" class="full-btn">Save Current Tab</button>
+<section class="card">
+<div class="section-title">Evening 🌙</div>
+<ul id="eveningList"></ul>
+</section>
 
-    <ul id="bookmarkList"></ul>
-  </section>
+<section class="card">
+<div class="section-title">Done ✅</div>
+<ul id="doneList"></ul>
+</section>
+
+<section class="card">
+<div class="section-title">Bookmarks</div>
+<button id="saveTabBtn" class="full-btn">Save Current Tab</button>
+<ul id="bookmarkList"></ul>
+</section>
 
 </div>
 

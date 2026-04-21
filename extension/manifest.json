@@ -1,10 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Daily Tabs OS",
-  "version": "0.1",
-  "description": "Tasks + bookmarks daily system",
+  "version": "1.0",
+  "description": "Daily productivity workspace",
+  "permissions": ["storage", "tabs"],
   "action": {
     "default_popup": "popup.html"
   },
-  "permissions": ["storage", "tabs"]
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  }
 }

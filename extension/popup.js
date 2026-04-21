@@ -13,18 +13,83 @@ const bookmarkList = document.getElementById("bookmarkList");
 const progressBadge = document.getElementById("progressBadge");
 const todayDate = document.getElementById("todayDate");
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadTasks();
-  loadBookmarks();
+// NEW UI (Focus)
+let currentDateKey = getDateKey();
+
+// --------------------
+// INIT
+// --------------------
+
+document.addEventListener("DOMContentLoaded", async () => {
   setDate();
+  await runDailyReset();
+  await loadTasks();
+  await loadBookmarks();
+
+  taskInput.focus();
 });
+
+// --------------------
+// DATE
+// --------------------
+
+function getDateKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
 
 function setDate() {
   const now = new Date();
-  todayDate.textContent = now.toLocaleDateString();
+  todayDate.textContent = now.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "short",
+    day: "numeric"
+  });
 }
 
-addTaskBtn.addEventListener("click", async () => {
+// --------------------
+// DAILY RESET SYSTEM
+// --------------------
+
+async function runDailyReset() {
+  const lastKey = await getStorage("lastDateKey");
+
+  if (lastKey === currentDateKey) return;
+
+  let tasks = await getStorage("tasks") || [];
+
+  // move completed to archive
+  let archive = await getStorage("archive") || [];
+  archive.push({
+    date: lastKey,
+    tasks
+  });
+
+  // extract recurring tasks
+  const recurring = tasks.filter(t => t.recurring);
+
+  // reset day tasks
+  const resetTasks = recurring.map(t => ({
+    ...t,
+    done: false
+  }));
+
+  await setStorage("archive", archive);
+  await setStorage("tasks", resetTasks);
+  await setStorage("lastDateKey", currentDateKey);
+}
+
+// --------------------
+// ADD TASK
+// --------------------
+
+addTaskBtn.addEventListener("click", addTask);
+
+taskInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") addTask();
+});
+
+async function addTask() {
   const text = taskInput.value.trim();
   if (!text) return;
 
@@ -34,15 +99,22 @@ addTaskBtn.addEventListener("click", async () => {
     id: Date.now(),
     text,
     section: sectionSelect.value,
-    done: false
+    done: false,
+    recurring: false,
+    focus: false
   });
 
   await setStorage("tasks", tasks);
 
   taskInput.value = "";
+  taskInput.focus();
 
   loadTasks();
-});
+}
+
+// --------------------
+// LOAD TASKS
+// --------------------
 
 async function loadTasks() {
   let tasks = await getStorage("tasks") || [];
@@ -53,6 +125,7 @@ async function loadTasks() {
   doneList.innerHTML = "";
 
   let doneCount = 0;
+  let total = tasks.length;
 
   tasks.forEach(task => {
     const li = document.createElement("li");
@@ -60,13 +133,13 @@ async function loadTasks() {
     li.innerHTML = `
       <span class="task-text">${task.text}</span>
       <div class="actions">
-        <button data-id="${task.id}" class="doneBtn">✔</button>
-        <button data-id="${task.id}" class="delBtn">✖</button>
+        <button class="focusBtn" data-id="${task.id}">★</button>
+        <button class="doneBtn" data-id="${task.id}">✔</button>
+        <button class="delBtn" data-id="${task.id}">✖</button>
       </div>
     `;
 
     if (task.done) {
-      li.classList.add("done");
       doneList.appendChild(li);
       doneCount++;
     } else {
@@ -76,7 +149,18 @@ async function loadTasks() {
     }
   });
 
-  progressBadge.textContent = `${doneCount} Done`;
+  progressBadge.textContent = total === 0
+    ? "0 Tasks"
+    : `${doneCount}/${total} Done`;
+
+  bindTaskActions(tasks);
+}
+
+// --------------------
+// TASK ACTIONS
+// --------------------
+
+function bindTaskActions(tasks) {
 
   document.querySelectorAll(".doneBtn").forEach(btn => {
     btn.onclick = async () => {
@@ -101,7 +185,26 @@ async function loadTasks() {
       loadTasks();
     };
   });
+
+  // ⭐ FOCUS TASK
+  document.querySelectorAll(".focusBtn").forEach(btn => {
+    btn.onclick = async () => {
+      const id = Number(btn.dataset.id);
+
+      tasks = tasks.map(t => ({
+        ...t,
+        focus: t.id === id
+      }));
+
+      await setStorage("tasks", tasks);
+      loadTasks();
+    };
+  });
 }
+
+// --------------------
+// BOOKMARKS
+// --------------------
 
 saveTabBtn.addEventListener("click", async () => {
   chrome.tabs.query({ active: true, currentWindow: true }, async tabs => {
@@ -131,37 +234,24 @@ async function loadBookmarks() {
 
     li.innerHTML = `
       <a href="${item.url}" target="_blank">${item.title}</a>
-      <button data-id="${item.id}" class="delBookmark">✖</button>
     `;
 
     bookmarkList.appendChild(li);
   });
-
-  document.querySelectorAll(".delBookmark").forEach(btn => {
-    btn.onclick = async () => {
-      const id = Number(btn.dataset.id);
-
-      data = data.filter(x => x.id !== id);
-
-      await setStorage("bookmarks", data);
-
-      loadBookmarks();
-    };
-  });
 }
 
+// --------------------
+// STORAGE
+// --------------------
+
 function getStorage(key) {
-  return new Promise(resolve => {
-    chrome.storage.local.get([key], result => {
-      resolve(result[key]);
-    });
+  return new Promise(res => {
+    chrome.storage.local.get([key], r => res(r[key]));
   });
 }
 
 function setStorage(key, value) {
-  return new Promise(resolve => {
-    chrome.storage.local.set({ [key]: value }, () => {
-      resolve();
-    });
+  return new Promise(res => {
+    chrome.storage.local.set({ [key]: value }, res);
   });
 }

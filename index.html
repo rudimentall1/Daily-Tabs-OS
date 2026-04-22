@@ -3,61 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Tabs OS — Организация вкладок для продуктивного дня</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Daily Tabs OS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #111827, #1e293b);
+        }
+        .hero h1 {
+            font-size: 72px;
+            margin-bottom: 15px;
+        }
+        .hero p {
+            font-size: 24px;
+            color: #94a3b8;
+            margin-bottom: 35px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 16px 28px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+        .secondary {
+            background: #1e293b;
+            color: white;
+            border: 1px solid #334155;
+        }
+        .features h2, .users h2, .cta h2 {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 30px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 18px;
+        }
+        .card h3 {
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+        .card p {
+            color: #94a3b8;
+        }
+        .users {
+            text-align: center;
+            padding: 70px 20px;
+        }
+        .users p {
+            font-size: 22px;
+            color: #94a3b8;
+        }
+        .cta {
+            text-align: center;
+            padding: 90px 20px;
+            background: #111827;
+        }
+        .cta p {
+            font-size: 22px;
+            color: #94a3b8;
+            margin: 20px 0 30px;
+        }
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+    </style>
 </head>
 <body>
-    <!-- Hero секция -->
     <div class="hero">
         <h1>Daily Tabs OS</h1>
-        <p>Организуйте вкладки, повышайте продуктивность</p>
+        <p>Организуйте вкладки для максимальной продуктивности</p>
         <div class="buttons">
             <a href="#" class="btn primary">Начать сейчас</a>
             <a href="#" class="btn secondary">Узнать больше</a>
         </div>
     </div>
 
-    <!-- Особенности -->
     <div class="container features">
         <h2>Ключевые возможности</h2>
         <div class="grid">
             <div class="card">
                 <h3>✨ Группировка вкладок</h3>
-                <p>Объединяйте связанные вкладки в группы для быстрого доступа и навигации.</p>
+                <p>Объединяйте связанные вкладки в группы для быстрого доступа</p>
             </div>
             <div class="card">
                 <h3>🔍 Умный поиск</h3>
-                <p>Мгновенный поиск по всем открытым вкладкам и истории.</p>
+                <p>Мгновенный поиск по всем открытым вкладкам и истории</p>
             </div>
             <div class="card">
                 <h3>📊 Аналитика времени</h3>
-                <p>Отслеживайте, сколько времени вы тратите на разные проекты и сайты.</p>
+                <p>Отслеживайте время на разных проектах и сайтах</p>
             </div>
             <div class="card">
                 <h3>💾 Сохранение сессий</h3>
-                <p>Сохраняйте рабочие пространства и возвращайтесь к ним одним кликом.</p>
+                <p>Сохраняйте рабочие пространства и возвращайтесь к ним</p>
             </div>
         </div>
     </div>
 
-    <!-- Отзывы пользователей -->
     <div class="users">
         <h2>Присоединяйтесь к тысячам пользователей</h2>
         <p>⭐ 4.9 ★ на основе 2,500+ отзывов</p>
-        <p style="font-size: 18px; margin-top: 20px;">"Daily Tabs OS изменил мой подход к работе в браузере — теперь я всегда организован!"</p>
+        <p style="font-size: 18px; margin-top: 20px;">"Daily Tabs OS изменил мой подход к работе в браузере!"</p>
         <p style="color: #cbd5e1;">— Алексей, разработчик</p>
     </div>
 
-    <!-- Призыв к действию -->
     <div class="cta">
         <h2>Готовы навести порядок во вкладках?</h2>
-        <p>Установите расширение бесплатно и почувствуйте разницу с первого дня.</p>
+        <p>Установите расширение бесплатно и почувствуйте разницу</p>
         <a href="#" class="btn primary" style="background: #3b82f6;">Установить сейчас →</a>
     </div>
 
-    <!-- Подвал -->
     <footer>
-        <p>© 2026 Daily Tabs OS. Сделано для продуктивной работы.</p>
+        <p>© 2026 Daily Tabs OS. Сделано для продуктивной работы</p>
     </footer>
 </body>
 </html>

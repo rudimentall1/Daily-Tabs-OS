@@ -1,216 +1,224 @@
+// newtab.js - режим карточек, два ряда, цветовая индикация
+let tasks = [];
+let currentDate = getDateKey();
+
 document.addEventListener("DOMContentLoaded", async () => {
+  await loadTasks();
+  renderTasks();
+  updateCounter();
+  bindEvents();
   setDate();
-  await loadTasks(); // Загружаем задачи
-  await loadRecurringTasks();
-  loadWorkspace();
-  loadStreak();
-  checkProStatus();
-  bindUpgradeButton(); // кнопка Upgrade
-  bindAddTaskButton(); // кнопка добавления задачи
+  await updateUILanguage();
 });
 
-function setDate() {
-  const el = document.getElementById("todayDate");
-
-  const now = new Date();
-
-  el.textContent = now.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "short",
-    day: "numeric"
-  });
+function getDateKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 }
 
-// --------------------
-// MONETIZATION CHECK
-// --------------------
-
-async function checkProStatus() {
-  const isPro = await getStorage("isPro");
-
-  const upgradeBtn = document.getElementById("upgradeBtn");
-
-  if (isPro) {
-    upgradeBtn.textContent = "You have PRO access!";
-    upgradeBtn.disabled = true;
-  } else {
-    upgradeBtn.textContent = "Upgrade to Pro";
+function setDate() {
+  const now = new Date();
+  const el = document.getElementById("todayDate");
+  if (el) {
+    el.textContent = now.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "short",
+      day: "numeric"
+    });
   }
 }
 
-// --------------------
-// BIND UPGRADE BUTTON
-// --------------------
-
-function bindUpgradeButton() {
-  const upgradeBtn = document.getElementById("upgradeBtn");
-
-  upgradeBtn.addEventListener("click", async () => {
-    // Симуляция покупки подписки
-    alert("Redirecting to Pro version purchase...");
-    await setStorage("isPro", true); // Симуляция того, что пользователь получил Pro
-
-    // Обновить UI после покупки
-    checkProStatus();
-  });
-}
-
-// --------------------
-// STREAK SYSTEM
-// --------------------
-
-async function loadStreak() {
-  const streak = await getStorage("streak") || 0;
-
-  const streakEl = document.getElementById("streakCount");
-  streakEl.textContent = `${streak} productive days`;
-}
-
-// --------------------
-// TASKS
-// --------------------
-
 async function loadTasks() {
-  const tasks = await getStorage("tasks") || [];
+  const stored = await getStorage("tasks");
+  if (stored && stored.length > 0) {
+    tasks = stored;
+  } else {
+    // Пример задач
+    tasks = [
+      { id: 1, title: "Galxe: Daily Check-in", url: "https://galxe.com", category: "testnet", completed: false, completedAt: null },
+      { id: 2, title: "LayerZero: Send tx", url: "https://layerzero.network", category: "bridge", completed: false, completedAt: null },
+      { id: 3, title: "Zora: Mint NFT", url: "https://zora.co", category: "nft", completed: true, completedAt: Date.now() },
+      { id: 4, title: "Arbitrum: Claim", url: "https://arbitrum.foundation", category: "drop", completed: false, completedAt: null },
+      { id: 5, title: "Optimism: Quest", url: "https://optimism.io", category: "testnet", completed: false, completedAt: null }
+    ];
+    await setStorage("tasks", tasks);
+  }
+}
 
-  const taskList = document.getElementById("taskList");
-
-  taskList.innerHTML = ""; // Очистить список перед добавлением новых задач
-
+function renderTasks() {
+  const grid = document.getElementById("tasksGrid");
+  if (!grid) return;
+  
+  grid.innerHTML = "";
+  
   tasks.forEach(task => {
-    const li = document.createElement("li");
-
-    li.innerHTML = `
-      <span>${task.text}</span>
-      <div class="actions">
-        <button class="doneBtn" data-id="${task.id}">✔</button>
-        <button class="delBtn" data-id="${task.id}">✖</button>
+    const card = document.createElement("div");
+    card.className = `task-card ${task.completed ? 'completed' : 'new'}`;
+    
+    // Клик по карточке = переход по ссылке
+    card.onclick = (e) => {
+      // Если кликнули не на кнопку удаления
+      if (!e.target.classList.contains('delete-task')) {
+        if (task.url && task.url !== "") {
+          window.open(task.url, '_blank');
+        }
+      }
+    };
+    
+    card.innerHTML = `
+      <div class="task-header">
+        <div class="task-title">${escapeHtml(task.title)}</div>
+        <div class="task-category">${task.category}</div>
+      </div>
+      <div class="task-footer">
+        <div class="checkbox-icon" data-id="${task.id}">${task.completed ? '✓' : '○'}</div>
+        <button class="delete-task" data-id="${task.id}">✖</button>
       </div>
     `;
-
-    taskList.appendChild(li); // Добавить задачу в список
+    
+    grid.appendChild(card);
   });
-
-  bindTaskActions(tasks); // Привязать события к кнопкам
+  
+  bindCardEvents();
 }
 
-// --------------------
-// BIND TASK ACTIONS
-// --------------------
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
 
-function bindTaskActions(tasks) {
-  document.querySelectorAll(".doneBtn").forEach(btn => {
-    btn.onclick = async () => {
-      const id = Number(btn.dataset.id);
-
-      tasks = tasks.map(t =>
-        t.id === id ? { ...t, done: !t.done } : t
-      );
-
-      await setStorage("tasks", tasks);
-      loadTasks(); // Перезагружаем задачи с обновленным состоянием
+function bindCardEvents() {
+  // Обработка клика по иконке чекбокса (отметка о выполнении)
+  document.querySelectorAll(".checkbox-icon").forEach(icon => {
+    icon.onclick = async (e) => {
+      e.stopPropagation();
+      const id = parseInt(icon.dataset.id);
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        task.completedAt = task.completed ? Date.now() : null;
+        await setStorage("tasks", tasks);
+        renderTasks();
+        updateCounter();
+      }
     };
   });
-
-  document.querySelectorAll(".delBtn").forEach(btn => {
-    btn.onclick = async () => {
-      const id = Number(btn.dataset.id);
-
+  
+  // Обработка удаления задачи
+  document.querySelectorAll(".delete-task").forEach(btn => {
+    btn.onclick = async (e) => {
+      e.stopPropagation();
+      const id = parseInt(btn.dataset.id);
       tasks = tasks.filter(t => t.id !== id);
-
       await setStorage("tasks", tasks);
-      loadTasks(); // Перезагружаем задачи с обновленным списком
+      renderTasks();
+      updateCounter();
     };
   });
 }
 
-// --------------------
-// ADD TASK BUTTON
-// --------------------
+function updateCounter() {
+  const total = tasks.length;
+  const completed = tasks.filter(t => t.completed).length;
+  const counterEl = document.getElementById("taskCounter");
+  if (counterEl) {
+    counterEl.textContent = `${completed}/${total}`;
+  }
+}
 
-function bindAddTaskButton() {
-  const addBtn = document.getElementById("addTaskBtn");
-  const taskInput = document.getElementById("taskInput");
+async function addTask() {
+  const title = prompt("Enter task title:");
+  if (!title) return;
+  
+  const url = prompt("Enter URL (optional):", "https://");
+  const category = prompt("Category (testnet/bridge/nft/drop):", "testnet");
+  
+  const newTask = {
+    id: Date.now(),
+    title: title,
+    url: url && url !== "https://" ? url : "",
+    category: category || "testnet",
+    completed: false,
+    completedAt: null
+  };
+  
+  tasks.push(newTask);
+  await setStorage("tasks", tasks);
+  renderTasks();
+  updateCounter();
+}
 
-  addBtn.addEventListener("click", async () => {
-    const text = taskInput.value.trim();
+async function exportData() {
+  const data = {
+    exportDate: new Date().toISOString(),
+    tasks: tasks
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `tasks-backup-${getDateKey()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
-    if (text) {
-      const newTask = {
-        id: Date.now(),
-        text,
-        done: false,
-        section: "morning", // Default section
-      };
-
-      const tasks = await getStorage("tasks") || [];
-      tasks.push(newTask);
-
+function openMassImporter() {
+  // Простой импорт через JSON-файл
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json";
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if (data.tasks) {
+      tasks = data.tasks;
       await setStorage("tasks", tasks);
-      taskInput.value = ""; // Очистить поле ввода
-
-      loadTasks(); // Перезагружаем задачи с новым элементом
+      renderTasks();
+      updateCounter();
+      alert(`Imported ${tasks.length} tasks`);
+    } else {
+      alert("Invalid file format");
     }
-  });
+  };
+  input.click();
 }
 
-// --------------------
-// RECURRING TASKS
-// --------------------
-
-async function loadRecurringTasks() {
-  const tasks = await getStorage("tasks") || [];
-  const recurringList = document.getElementById("recurringList");
-
-  recurringList.innerHTML = "";
-
-  const recurringTasks = tasks.filter(task => task.recurring);
-
-  recurringTasks.forEach(task => {
-    const li = document.createElement("li");
-    li.textContent = task.text;
-    recurringList.appendChild(li);
-  });
+// Переключение языка
+async function updateUILanguage() {
+  const lang = await getCurrentLanguage();
+  const appTitle = document.getElementById("appTitle");
+  const addBtnText = document.getElementById("addBtnText");
+  const importBtnText = document.getElementById("importBtnText");
+  const exportBtnText = document.getElementById("exportBtnText");
+  const langToggle = document.getElementById("langToggle");
+  
+  if (lang === "ru") {
+    if (appTitle) appTitle.textContent = "🧪 Тестнет Планер";
+    if (addBtnText) addBtnText.textContent = "Добавить задачу";
+    if (importBtnText) importBtnText.textContent = "Массовый импорт";
+    if (exportBtnText) exportBtnText.textContent = "Экспорт";
+    if (langToggle) langToggle.textContent = "EN / RU";
+  } else {
+    if (appTitle) appTitle.textContent = "🧪 Testnet Planner";
+    if (addBtnText) addBtnText.textContent = "Add Task";
+    if (importBtnText) importBtnText.textContent = "Mass Import";
+    if (exportBtnText) exportBtnText.textContent = "Export";
+    if (langToggle) langToggle.textContent = "RU / EN";
+  }
 }
 
-// --------------------
-// WORKSPACE LINKS
-// --------------------
-
-function loadWorkspace() {
-  const workspaceGrid = document.getElementById("workspaceGrid");
-
-  // Здесь можно динамически добавлять больше пользовательских ссылок
-  const links = [
-    { name: "Mail Calendar", url: "https://calendar.mail.ru/" },
-    { name: "Mail.ru", url: "https://mail.ru/" },
-    { name: "GitHub", url: "https://github.com/" },
-    { name: "Telegram", url: "https://web.telegram.org/" }
-  ];
-
-  links.forEach(link => {
-    const anchor = document.createElement("a");
-    anchor.href = link.url;
-    anchor.target = "_blank";
-    anchor.textContent = link.name;
-    workspaceGrid.appendChild(anchor);
-  });
+async function toggleLanguage() {
+  const current = await getCurrentLanguage();
+  const newLang = current === "en" ? "ru" : "en";
+  await setLanguage(newLang);
+  await updateUILanguage();
 }
 
-// --------------------
-// STORAGE
-// --------------------
-
-function getStorage(key) {
-  return new Promise(resolve => {
-    chrome.storage.local.get([key], result => {
-      resolve(result[key]);
-    });
-  });
-}
-
-function setStorage(key, value) {
-  return new Promise(resolve => {
-    chrome.storage.local.set({ [key]: value }, resolve);
-  });
+function bindEvents() {
+  document.getElementById("addTaskBtn").onclick = () => addTask();
+  document.getElementById("massImportBtn").onclick = () => openMassImporter();
+  document.getElementById("exportBtn").onclick = () => exportData();
+  document.getElementById("langToggle").onclick = () => toggleLanguage();
 }

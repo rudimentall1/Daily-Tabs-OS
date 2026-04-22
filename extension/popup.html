@@ -1,85 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Daily Tabs OS</title>
-<link rel="stylesheet" href="popup.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Testnet Runner</title>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
 
 <div class="app">
+  <header class="topbar">
+    <div>
+      <h1>✅ Testnet Runner</h1>
+      <p id="todayDate"></p>
+    </div>
+    <div class="badge" id="progressBadge">0/0</div>
+  </header>
 
-<header class="topbar">
-<div>
-<h1>Daily Tabs OS</h1>
-<p id="todayDate"></p>
+  <!-- Прогресс-бар -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressFill"></div>
+    <div class="progress-text" id="progressPercent">0%</div>
+  </div>
+
+  <!-- Список задач -->
+  <div class="task-container" id="taskList"></div>
+
+  <!-- Кнопки управления -->
+  <div class="actions-bar">
+    <button id="exportBtn" class="full-btn">📤 Export Today</button>
+    <button id="addTemplateBtn" class="full-btn">➕ Add Task to Template</button>
+    <button id="massImportBtn" class="full-btn">📥 Mass Import (100+)</button>
+  </div>
+
+  <button id="langToggle" class="full-btn">RU / EN</button>
 </div>
 
-<div class="badge" id="progressBadge">0 Tasks</div>
-</header>
-
-<section class="card focus-card">
-<div class="section-title">TODAY FOCUS 🎯</div>
-<div id="focusTask">No focus task selected</div>
-</section>
-
-<section class="card streak-card">
-<div class="section-title">STREAK 🔥</div>
-<div id="streakCount">0 productive days</div>
-</section>
-
-<section class="card premium-card">
-<div>
-<div class="section-title">PRO VERSION</div>
-<p class="pro-text">Sync • Stats • Themes • AI Planner</p>
-</div>
-
-<button id="upgradeBtn">Upgrade</button>
-</section>
-
-<section class="card add-card">
-<input id="taskInput" placeholder="What needs to be done?">
-
-<div class="row">
-<select id="sectionSelect">
-<option value="morning">Morning ☀️</option>
-<option value="day">Day 💼</option>
-<option value="evening">Evening 🌙</option>
-</select>
-
-<button id="addTaskBtn">Add</button>
-</div>
-</section>
-
-<section class="card">
-<div class="section-title">Morning ☀️</div>
-<ul id="morningList"></ul>
-</section>
-
-<section class="card">
-<div class="section-title">Day 💼</div>
-<ul id="dayList"></ul>
-</section>
-
-<section class="card">
-<div class="section-title">Evening 🌙</div>
-<ul id="eveningList"></ul>
-</section>
-
-<section class="card">
-<div class="section-title">Done ✅</div>
-<ul id="doneList"></ul>
-</section>
-
-<section class="card">
-<div class="section-title">Bookmarks</div>
-<button id="saveTabBtn" class="full-btn">Save Current Tab</button>
-<ul id="bookmarkList"></ul>
-</section>
-
-</div>
-
+<script src="shared.js"></script>
 <script src="popup.js"></script>
 </body>
 </html>

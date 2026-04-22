@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Daily Tabs OS",
-  "version": "1.0",
-  "description": "Daily productivity workspace",
+  "name": "Testnet Runner",
+  "version": "2.0",
+  "description": "Dashboard for testnet farmers",
   "permissions": ["storage", "tabs"],
   "action": {
     "default_popup": "popup.html"

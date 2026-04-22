@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Mass Task Importer</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: #0b0f19;
+      color: white;
+    }
+    textarea {
+      width: 100%;
+      height: 400px;
+      font-family: monospace;
+      font-size: 12px;
+      background: #1a1f2e;
+      color: white;
+      border: 1px solid #333;
+      padding: 10px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      background: #333;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>📋 Массовый импорт задач</h2>
+  <p>Вставь список задач (каждая с новой строки):</p>
+  <textarea id="taskList" placeholder="Galxe: Daily Check-in
+LayerZero: Send tx
+Zora: Mint NFT
+Arbitrum: Claim
+Optimism: Quest
+..."></textarea>
+  <br>
+  <label>Категория по умолчанию:</label>
+  <select id="defaultCategory">
+    <option value="testnet">TESTNET</option>
+    <option value="bridge">BRIDGE</option>
+    <option value="nft">NFT</option>
+    <option value="drop">DROP</option>
+    <option value="custom">CUSTOM</option>
+  </select>
+  <br><br>
+  <button id="importBtn">🚀 Импортировать задачи</button>
+  <div id="status" class="status"></div>
+  <script src="shared.js"></script>
+  <script>
+    document.getElementById("importBtn").onclick = async () => {
+      const textarea = document.getElementById("taskList");
+      const lines = textarea.value.split("\n").filter(line => line.trim().length > 0);
+      const category = document.getElementById("defaultCategory").value;
+      
+      const template = lines.map((text, index) => ({
+        id: Date.now() + index,
+        text: text.trim(),
+        category: category,
+        completed: false
+      }));
+      
+      await setStorage("dailyTemplate", template);
+      
+      // Очищаем историю, чтобы сегодняшние задачи обновились
+      const today = new Date().toISOString().slice(0,10);
+      const history = {};
+      history[today] = template.map(t => ({
+        id: t.id,
+        text: t.text,
+        category: t.category,
+        completed: false,
+        completedAt: null
+      }));
+      await setStorage("history", history);
+      
+      document.getElementById("status").innerHTML = `✅ Импортировано ${template.length} задач. Перезагрузи попап.`;
+    };
+  </script>
+</body>
+</html>

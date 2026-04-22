@@ -1,73 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Daily Tabs OS</title>
-<link rel="stylesheet" href="newtab.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testnet Planner</title>
+  <link rel="stylesheet" href="newtab.css">
 </head>
 <body>
 
 <div class="app">
+  <!-- Верхняя панель -->
+  <header class="topbar">
+    <div>
+      <h1 id="appTitle">🧪 Testnet Planner</h1>
+      <p id="todayDate"></p>
+    </div>
+    <div class="stats">
+      <div class="badge" id="taskCounter">0/0</div>
+      <button id="langToggle" class="small-btn">RU/EN</button>
+    </div>
+  </header>
 
-<header class="topbar">
-  <div>
-    <h1>Daily Tabs OS</h1>
-    <p id="todayDate"></p>
+  <!-- Кнопки управления -->
+  <div class="action-bar">
+    <button id="addTaskBtn" class="primary-btn">➕ <span id="addBtnText">Add Task</span></button>
+    <button id="massImportBtn" class="secondary-btn">📥 <span id="importBtnText">Mass Import</span></button>
+    <button id="exportBtn" class="secondary-btn">📤 <span id="exportBtnText">Export</span></button>
   </div>
 
-  <div class="badge" id="progressBadge">0 Tasks</div>
-</header>
-
-<section class="card focus-card">
-  <div class="section-title">TODAY FOCUS 🎯</div>
-  <div id="focusTask">No focus task selected</div>
-</section>
-
-<section class="card streak-card">
-  <div class="section-title">STREAK 🔥</div>
-  <div id="streakCount">0 productive days</div>
-</section>
-
-<section class="card tasks-card">
-  <div class="section-title">TASKS</div>
-  <ul id="taskList"></ul>
-  <button id="clearTasksBtn">Clear Completed Tasks</button>
-</section>
-
-<section class="card recurring-card">
-  <div class="section-title">RECURRING TASKS 🔄</div>
-  <ul id="recurringList"></ul>
-</section>
-
-<section class="card premium-card">
-  <div>
-    <div class="section-title">PRO VERSION</div>
-    <p class="pro-text">Sync • Stats • Themes • AI Planner</p>
-  </div>
-  <button id="upgradeBtn">Upgrade to Pro</button>
-</section>
-
-<section class="card add-card">
-  <input id="taskInput" placeholder="What needs to be done?">
-  <div class="row">
-    <button id="addTaskBtn">Add Task</button>
-  </div>
-</section>
-
-<section class="card workspace-card">
-  <div class="section-title">Workspace</div>
-  <div class="grid" id="workspaceGrid">
-    <!-- Example Links -->
-    <a href="https://calendar.mail.ru/" target="_blank">Mail Calendar</a>
-    <a href="https://mail.ru/" target="_blank">Mail.ru</a>
-    <a href="https://github.com/" target="_blank">GitHub</a>
-    <a href="https://web.telegram.org/" target="_blank">Telegram</a>
-  </div>
-</section>
-
+  <!-- Сетка задач (два ряда) -->
+  <div class="tasks-grid" id="tasksGrid"></div>
 </div>
 
+<script src="shared.js"></script>
 <script src="newtab.js"></script>
 </body>
 </html>

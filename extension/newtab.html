@@ -11,59 +11,60 @@
 <div class="app">
 
 <header class="topbar">
-<h1>Daily Tabs OS</h1>
-<div id="todayDate"></div>
+  <div>
+    <h1>Daily Tabs OS</h1>
+    <p id="todayDate"></p>
+  </div>
+
+  <div class="badge" id="progressBadge">0 Tasks</div>
 </header>
 
-<div class="layout">
+<section class="card focus-card">
+  <div class="section-title">TODAY FOCUS 🎯</div>
+  <div id="focusTask">No focus task selected</div>
+</section>
 
-<aside class="sidebar">
-<h2>Tasks</h2>
+<section class="card streak-card">
+  <div class="section-title">STREAK 🔥</div>
+  <div id="streakCount">0 productive days</div>
+</section>
 
-<div class="section">
-<h3>Morning ☀️</h3>
-<ul id="morningList"></ul>
-</div>
+<section class="card tasks-card">
+  <div class="section-title">TASKS</div>
+  <ul id="taskList"></ul>
+  <button id="clearTasksBtn">Clear Completed Tasks</button>
+</section>
 
-<div class="section">
-<h3>Day 💼</h3>
-<ul id="dayList"></ul>
-</div>
+<section class="card recurring-card">
+  <div class="section-title">RECURRING TASKS 🔄</div>
+  <ul id="recurringList"></ul>
+</section>
 
-<div class="section">
-<h3>Evening 🌙</h3>
-<ul id="eveningList"></ul>
-</div>
-</aside>
+<section class="card premium-card">
+  <div>
+    <div class="section-title">PRO VERSION</div>
+    <p class="pro-text">Sync • Stats • Themes • AI Planner</p>
+  </div>
+  <button id="upgradeBtn">Upgrade to Pro</button>
+</section>
 
-<main class="workspace">
+<section class="card add-card">
+  <input id="taskInput" placeholder="What needs to be done?">
+  <div class="row">
+    <button id="addTaskBtn">Add Task</button>
+  </div>
+</section>
 
-<h2>Workspace</h2>
-
-<div class="grid">
-
-<a href="https://calendar.mail.ru/" target="_blank">Mail Calendar</a>
-
-<a href="https://mail.ru/" target="_blank">Mail.ru</a>
-
-<a href="https://github.com/" target="_blank">GitHub</a>
-
-<a href="https://web.telegram.org/" target="_blank">Telegram</a>
-
-<a href="https://tradingview.com/" target="_blank">TradingView</a>
-
-<a href="https://binance.com/" target="_blank">Binance</a>
-
-</div>
-
-</main>
-
-<aside class="rightbar">
-<h2>Notes</h2>
-<textarea placeholder="Quick notes..."></textarea>
-</aside>
-
-</div>
+<section class="card workspace-card">
+  <div class="section-title">Workspace</div>
+  <div class="grid" id="workspaceGrid">
+    <!-- Example Links -->
+    <a href="https://calendar.mail.ru/" target="_blank">Mail Calendar</a>
+    <a href="https://mail.ru/" target="_blank">Mail.ru</a>
+    <a href="https://github.com/" target="_blank">GitHub</a>
+    <a href="https://web.telegram.org/" target="_blank">Telegram</a>
+  </div>
+</section>
 
 </div>
 
